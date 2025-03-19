@@ -15,9 +15,9 @@ class gitolite::params {
   $umask               = '0077'
 
   # <OS family handling>
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Debian': {
-      case $::lsbdistcodename {
+      case $facts['os']['distro']['codename'] {
         'squeeze', 'wheezy', 'lucid', 'precise': {
           $version = '2'
         }
@@ -27,20 +27,20 @@ class gitolite::params {
         default: {
           fail("gitolite supports Debian 6 (squeeze), 7 (wheezy) and 8 (jessie) \
 and Ubuntu 10.04 (lucid), 12.04 (precise), 14.04 (trusty) and 16.04 (xenial). \
-Detected lsbdistcodename is <${::lsbdistcodename}>.")
+Detected lsbdistcodename is <${facts['os']['distro']['codename']}>.")
         }
       }
     }
     'RedHat': {
-      case $::operatingsystemmajrelease {
+      case $facts['os']['release']['major'] {
         '5': {
           $version = '2'
         }
-        '6', '7': {
+        '6', '7', '8', '9': {
           $version = '3'
         }
         default: {
-          fail("gitolite supports EL 5, 6 and 7. Detected operatingsystemmajrelease is <${::operatingsystemmajrelease}>.")
+          fail("gitolite supports EL 5, 6 and 7. Detected operatingsystemmajrelease is <${facts['os']['release']['major']}>.")
         }
       }
     }
@@ -53,11 +53,11 @@ Detected lsbdistcodename is <${::lsbdistcodename}>.")
       $version      = '3'
     }
     default: {
-      fail("gitolite supports osfamilies Debian, RedHat and Suse. Detected osfamily is <${::osfamily}>.")
+      fail("gitolite supports osfamilies Debian, RedHat and Suse. Detected osfamily is <${facts['os']['family']}>.")
     }
   }
 
-  if $::osfamily != 'Suse' {
+  if $facts['os']['family'] != 'Suse' {
     if $version == '2' {
       $cmd_install  = 'gl-setup -q'
       $package_name = 'gitolite'
