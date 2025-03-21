@@ -4,7 +4,7 @@ class gitolite::install inherits gitolite {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
 
-  if $gitolite::manage_user_bool {
+  if $gitolite::manage_user {
     group { $gitolite::group_name:
       ensure => 'present',
       system => true,
@@ -20,14 +20,14 @@ class gitolite::install inherits gitolite {
       system           => true,
     }
 
-    if $gitolite::manage_home_dir_bool {
+    if $gitolite::manage_home_dir {
       User[$gitolite::user_name] {
         before => File['gitolite_home_dir'],
       }
     }
   }
 
-  if $gitolite::manage_home_dir_bool {
+  if $gitolite::manage_home_dir {
     file { 'gitolite_home_dir':
       ensure => directory,
       path   => $gitolite::home_dir,
