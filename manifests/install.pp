@@ -33,7 +33,8 @@ class gitolite::install inherits gitolite {
       path   => $gitolite::home_dir,
       owner  => $gitolite::user_name,
       group  => $gitolite::group_name,
-      before => Package['gitolite'],
+      recurse => true,
+      require => Package['gitolite'],
     }
   }
 
