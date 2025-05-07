@@ -25,6 +25,7 @@ class gitolite::install inherits gitolite {
         before => File['gitolite_home_dir'],
       }
     }
+
   }
 
   if $gitolite::manage_home_dir {
@@ -33,7 +34,17 @@ class gitolite::install inherits gitolite {
       path   => $gitolite::home_dir,
       owner  => $gitolite::user_name,
       group  => $gitolite::group_name,
+      mode   => undef, # don't change the mode
+      require => Package['gitolite'],
+    }
+
+    file { 'gitolite_ssh_dir':
+      ensure => directory,
+      path   => "$gitolite::home_dir/.ssh",
+      owner  => $gitolite::user_name,
+      group  => $gitolite::group_name,
       recurse => true,
+      mode   => undef, # don't change the mode
       require => Package['gitolite'],
     }
   }
